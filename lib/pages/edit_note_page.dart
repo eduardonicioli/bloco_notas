@@ -23,16 +23,32 @@ class EditNotePage extends StatelessWidget {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Campo de título
             TextField(
               controller: titleController,
-              decoration: InputDecoration(labelText: 'Título'),
-            ),
-            TextField(
-              controller: contentController,
-              decoration: InputDecoration(labelText: 'Conteúdo'),
-              maxLines: 5,
+              decoration: InputDecoration(
+                labelText: 'Título',
+                labelStyle: TextStyle(fontSize: 16),
+              ),
             ),
             SizedBox(height: 20),
+
+            // Campo de conteúdo com rolagem e maxLines = null
+            Expanded(
+              child: SingleChildScrollView(
+                child: TextField(
+                  controller: contentController,
+                  maxLines: 20,  // Sem limite de linhas
+                  decoration: InputDecoration(
+                    labelText: 'Conteúdo',
+                    alignLabelWithHint: true,
+                    labelStyle: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+            ),
+
+            // Botão de salvar
             ElevatedButton(
               onPressed: () {
                 final updatedNote = Note(

@@ -1,27 +1,35 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
+import 'package:meta/meta.dart';
+import '../models/note.dart';
 import 'notes_event.dart';
 import 'notes_state.dart';
-import '../models/note.dart';
 
 class NotesBloc extends Bloc<NotesEvent, NotesState> {
-  NotesBloc() : super(NotesInitial());
-
+  // Lista de notas que simula um banco de dados
   List<Note> notes = [];
 
-  @override
-  Stream<NotesState> mapEventToState(NotesEvent event) async* {
-    if (event is AddNoteEvent) {
+  NotesBloc() : super(NotesInitialState()) {
+    on<AddNoteEvent>((event, emit) {
+      // Adiciona a nova nota à lista
       notes.add(event.note);
-      yield NotesLoadedState(notes);
-    } else if (event is EditNoteEvent) {
-      int index = notes.indexWhere((note) => note.id == event.note.id);
+      // Emite o novo estado com a lista de notas
+      emit(NotesLoadedState(notes: notes));
+    });
+
+    on<DeleteNoteEvent>((event, emit) {
+      // Remove a nota da lista baseado no id
+      notes.removeWhere((note) => note.id == event.id);
+      // Emite o estado com a lista de notas atualizada
+      emit(NotesLoadedState(notes: notes));
+    });
+
+    on<EditNoteEvent>((event, emit) {
+      // Atualiza a nota na lista baseado no id
+      final index = notes.indexWhere((note) => note.id == event.note.id);
       if (index != -1) {
         notes[index] = event.note;
-        yield NotesLoadedState(notes);
+        emit(NotesLoadedState(notes: notes));
       }
-    } else if (event is DeleteNoteEvent) {
-      notes.removeWhere((note) => note.id == event.id);
-      yield NotesLoadedState(notes);
-    }
+    });
   }
 }

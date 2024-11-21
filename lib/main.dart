@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (context) => NotesBloc(),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Aplicativo de Notas',
         theme: ThemeData(
           primarySwatch: Colors.blue,
