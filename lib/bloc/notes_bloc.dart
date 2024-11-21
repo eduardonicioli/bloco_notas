@@ -1,33 +1,42 @@
+// lib/bloc/notes_bloc.dart
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import '../models/note.dart';
+import '../repositories/notes_repository.dart';
 import 'notes_event.dart';
 import 'notes_state.dart';
 
 class NotesBloc extends Bloc<NotesEvent, NotesState> {
-  // Lista de notas que simula um banco de dados
+  final NotesRepository notesRepository;
   List<Note> notes = [];
 
-  NotesBloc() : super(NotesInitialState()) {
-    on<AddNoteEvent>((event, emit) {
-      // Adiciona a nova nota à lista
+  NotesBloc(this.notesRepository) : super(NotesInitialState()) {
+    on<LoadNotesEvent>((event, emit) async {
+      try {
+        notes = await notesRepository.loadNotes();
+        emit(NotesLoadedState(notes: notes));
+      } catch (e) {
+        emit(NotesErrorState());
+      }
+    });
+
+    on<AddNoteEvent>((event, emit) async {
       notes.add(event.note);
-      // Emite o novo estado com a lista de notas
+      await notesRepository.saveNotes(notes);
       emit(NotesLoadedState(notes: notes));
     });
 
-    on<DeleteNoteEvent>((event, emit) {
-      // Remove a nota da lista baseado no id
+    on<DeleteNoteEvent>((event, emit) async {
       notes.removeWhere((note) => note.id == event.id);
-      // Emite o estado com a lista de notas atualizada
+      await notesRepository.saveNotes(notes);
       emit(NotesLoadedState(notes: notes));
     });
 
-    on<EditNoteEvent>((event, emit) {
-      // Atualiza a nota na lista baseado no id
+    on<EditNoteEvent>((event, emit) async {
       final index = notes.indexWhere((note) => note.id == event.note.id);
       if (index != -1) {
         notes[index] = event.note;
+        await notesRepository.saveNotes(notes);
         emit(NotesLoadedState(notes: notes));
       }
     });

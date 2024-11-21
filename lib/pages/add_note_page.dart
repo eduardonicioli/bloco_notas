@@ -46,7 +46,7 @@ class AddNotePage extends StatelessWidget {
               onPressed: () {
                 // Criar uma nova nota
                 final newNote = Note(
-                  id: DateTime.now().millisecondsSinceEpoch,  // Gerando um id único baseado no tempo
+                  id: DateTime.now().millisecondsSinceEpoch.toString(),  // Converte o 'int' para 'String'
                   title: titleController.text,
                   content: contentController.text,
                 );

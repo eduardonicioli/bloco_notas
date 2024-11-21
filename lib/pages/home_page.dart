@@ -34,7 +34,7 @@ class HomePage extends StatelessWidget {
                 itemCount: state.notes.length,
                 itemBuilder: (context, index) {
                   final note = state.notes[index];
-                  final dateTime = DateTime.fromMillisecondsSinceEpoch(note.id);
+                  final dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(note.id));
                   final formattedDate = "${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year} "
                       "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
                   final contentLines = note.content.split("\n").take(3).join("\n");

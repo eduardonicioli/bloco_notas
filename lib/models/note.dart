@@ -1,5 +1,7 @@
+import 'dart:convert';
+
 class Note {
-  final int id; // O id será um número inteiro gerado com base no tempo
+  final String id;
   final String title;
   final String content;
 
@@ -9,12 +11,21 @@ class Note {
     required this.content,
   });
 
-  // Método para criar uma nova nota
-  factory Note.create(String title, String content) {
+  // Método para converter um mapa JSON para uma instância de Note
+  factory Note.fromJson(Map<String, dynamic> json) {
     return Note(
-      id: DateTime.now().millisecondsSinceEpoch, // ID gerado com base no tempo
-      title: title,
-      content: content,
+      id: json['id'],
+      title: json['title'],
+      content: json['content'],
     );
+  }
+
+  // Método para converter uma instância de Note para um mapa JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'content': content,
+    };
   }
 }
