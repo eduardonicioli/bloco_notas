@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/notes_bloc.dart';
 import '../bloc/notes_event.dart';
 import '../models/note.dart';
+import 'package:bloco_notas/widgets.dart';
 
 class EditNotePage extends StatelessWidget {
   final Note note;
@@ -18,7 +19,10 @@ class EditNotePage extends StatelessWidget {
     contentController.text = note.content;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Editar Nota')),
+      appBar: customAppBar(
+        title: 'Editar Nota',
+        backgroundColor: Colors.blue,
+      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(

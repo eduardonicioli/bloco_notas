@@ -1,5 +1,5 @@
-import 'package:bloco_notas/models/note.dart';  // Importando Note corretamente.
-import 'package:meta/meta.dart';
+import 'package:bloco_notas/models/note.dart';
+
 
 
 abstract class NotesState {}

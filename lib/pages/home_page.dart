@@ -3,18 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/notes_bloc.dart';
 import '../bloc/notes_event.dart';
 import '../bloc/notes_state.dart';
-import '../models/note.dart';
 import 'add_note_page.dart';
 import 'edit_note_page.dart';
-import 'package:bloco_notas/widgets.dart';  // Certifique-se de importar corretamente o widgets.dart
+import 'package:bloco_notas/widgets.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(  // Usando a custom AppBar
-        title: 'Notas',
-        backgroundColor: Colors.redAccent,  // Exemplo de cor personalizada
+      appBar: customAppBar(
+        title: 'aNota!',
+        backgroundColor: Colors.red,
       ),
       body: GradientBackground(
         child: BlocBuilder<NotesBloc, NotesState>(
@@ -23,9 +22,9 @@ class HomePage extends StatelessWidget {
               if (state.notes.isEmpty) {
                 return Center(
                   child: Text(
-                    "Nenhuma nota disponível.\nAdicione uma nova nota.",
+                    "Nenhuma nota por aqui!\nAdicione uma nova nota.",
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: TextStyle(fontSize: 24, color: Colors.red),
                   ),
                 );
               }
@@ -37,14 +36,14 @@ class HomePage extends StatelessWidget {
                   final dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(note.id));
                   final formattedDate = "${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year} "
                       "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
-                  final contentLines = note.content.split("\n").take(3).join("\n");
+                  final contentLines = note.content.split("\n").take(1).join("\n");
 
                   return ListTile(
                     title: Text(
                       note.title.isEmpty ? "Título (em branco)" : note.title,
                       style: TextStyle(
-                        color: Colors.redAccent, // Cor do título
-                        fontWeight: FontWeight.bold, // Deixa o título em negrito (opcional)
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     subtitle: Column(
@@ -53,17 +52,21 @@ class HomePage extends StatelessWidget {
                         Text(
                           note.content.isEmpty ? "Conteúdo (em branco)" : contentLines,
                           style: TextStyle(
-                            color: Colors.black54, // Cor do conteúdo
-                            fontSize: 14, // Tamanho da fonte (opcional)
+                            color: Colors.black,
+                            fontSize: 14,
                           ),
                         ),
-                        SizedBox(height: 5),
+                        SizedBox(height: 5), // Adiciona um pequeno espaço entre o conteúdo e a data
                         Text(
-                          'Criado em: $formattedDate', // Data e hora formatada
+                          'Criado em: $formattedDate',
                           style: TextStyle(
-                            color: Colors.white, // Cor da data
-                            fontSize: 12, // Tamanho da fonte
+                            color: Colors.black,
+                            fontSize: 12,
                           ),
+                        ),
+                        Divider(
+                          color: Colors.grey, // Cor do divisor
+                          thickness: 1,        // Espessura do divisor
                         ),
                       ],
                     ),

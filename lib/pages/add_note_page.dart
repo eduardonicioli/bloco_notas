@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/notes_bloc.dart';
 import '../bloc/notes_event.dart';
 import '../models/note.dart';
+import 'package:bloco_notas/widgets.dart';
 
 class AddNotePage extends StatelessWidget {
   final TextEditingController titleController = TextEditingController();
@@ -11,8 +12,9 @@ class AddNotePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Adicionar Nota'),
+      appBar: customAppBar(
+        title: 'Adicionar Nota',
+        backgroundColor: Colors.green,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
