@@ -17,7 +17,10 @@ O projeto deve obrigatoriamente conter os seguintes itens:
 <li>O tema do aplicativo fica como escolha livre do grupo.  
 
 
-<P>Este projeto é uma bloco de notas para anotações em geral, usando o pacote <b>path_provider</b> é usado para encontrar caminhos no sistema de arquivos do dispositivo, como o diretório de documentos, diretório temporário e o cache
+<P>Este projeto é uma bloco de notas para anotações em geral, usando o pacote <b>provider</b> é amplamente utilizado no Flutter para gerenciamento de estado. Ele facilita a propagação de mudanças de estado entre widgets e simplifica o acesso aos dados, evitando o uso de métodos como InheritedWidget diretamente. 
+<p> O pacote <b>path_provider</b> usado para encontrar caminhos no sistema de arquivos do dispositivo, como o diretório de documentos, diretório temporário e o cache.
+<p>Também o pacote <b>json_annotation</b> fornece anotações para trabalhar com serialização e desserialização de JSON em classes Dart. Ele é usado em conjunto com o pacote build_runner e json_serializable para gerar automaticamente código para converter objetos em JSON e vice-versa.</p>
+
 <p>Foi desenvolvida como parte de um projeto em grupo na <b>FATEC Itapira</b> curso Desenvolvimento de Software Multiplataforma, para aprender e praticar a linguagem Dart e desenvolvimento de aplicações.
 
 # Instalação
