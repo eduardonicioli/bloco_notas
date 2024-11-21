@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (context) => NotesBloc(notesRepository)..add(LoadNotesEvent()),
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Bloco de Notas',
         theme: ThemeData(
           primarySwatch: Colors.blue,
