@@ -17,7 +17,7 @@ O projeto deve obrigatoriamente conter os seguintes itens:
 <li>O tema do aplicativo fica como escolha livre do grupo.  
 
 
-<P>Este projeto é uma bloco de notas para anotações em geral gravando no celular os dados.
+<P>Este projeto é uma bloco de notas para anotações em geral, usando o pacote <b>path_provider</b> é usado para encontrar caminhos no sistema de arquivos do dispositivo, como o diretório de documentos, diretório temporário e o cache
 <p>Foi desenvolvida como parte de um projeto em grupo na <b>FATEC Itapira</b> curso Desenvolvimento de Software Multiplataforma, para aprender e praticar a linguagem Dart e desenvolvimento de aplicações.
 
 # Instalação
