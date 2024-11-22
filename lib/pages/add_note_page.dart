@@ -15,6 +15,7 @@ class AddNotePage extends StatelessWidget {
       appBar: customAppBar(
         title: 'Adicionar Nota',
         backgroundColor: Colors.green,
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -43,23 +44,77 @@ class AddNotePage extends StatelessWidget {
 
             Expanded(child: Container()),
 
-            // Botão de salvar
-            ElevatedButton(
-              onPressed: () {
-                // Criar uma nova nota
-                final newNote = Note(
-                  id: DateTime.now().millisecondsSinceEpoch.toString(),  // Converte o 'int' para 'String'
-                  title: titleController.text,
-                  content: contentController.text,
-                );
+            // Botões de Voltar e Salvar
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Botão Voltar
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Apenas volta para a página anterior
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent, // Cor de fundo
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Tamanho do botão
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // Bordas arredondadas
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.arrow_back, color: Colors.white), // Ícone
+                      SizedBox(width: 5),
+                      Text(
+                        'Voltar',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white, // Cor do texto
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
-                // Disparar o evento AddNoteEvent para adicionar a nota
-                BlocProvider.of<NotesBloc>(context).add(AddNoteEvent(newNote));
+                // Botão Salvar
+                ElevatedButton(
+                  onPressed: () {
+                    // Criar uma nova nota
+                    final newNote = Note(
+                      id: DateTime.now().millisecondsSinceEpoch.toString(), // Converte o 'int' para 'String'
+                      title: titleController.text,
+                      content: contentController.text,
+                    );
 
-                // Voltar para a página anterior
-                Navigator.pop(context);
-              },
-              child: Text('Salvar'),
+                    // Disparar o evento AddNoteEvent para adicionar a nota
+                    BlocProvider.of<NotesBloc>(context).add(AddNoteEvent(newNote));
+
+                    // Voltar para a página anterior
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green, // Cor de fundo
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Tamanho do botão
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // Bordas arredondadas
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.check, color: Colors.white), // Ícone
+                      SizedBox(width: 5),
+                      Text(
+                        'Salvar',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white, // Cor do texto
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),

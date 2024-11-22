@@ -22,6 +22,7 @@ class EditNotePage extends StatelessWidget {
       appBar: customAppBar(
         title: 'Editar Nota',
         backgroundColor: Colors.blue,
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -60,12 +61,33 @@ class EditNotePage extends StatelessWidget {
                   title: titleController.text,
                   content: contentController.text,
                 );
-                BlocProvider.of<NotesBloc>(context)
-                    .add(EditNoteEvent(updatedNote));
-                Navigator.pop(context);
+                BlocProvider.of<NotesBloc>(context).add(EditNoteEvent(updatedNote));
+                Navigator.pop(context); // Volta para a página anterior
               },
-              child: Text('Salvar'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, // Cor de fundo
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Tamanho do botão
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10), // Bordas arredondadas
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.arrow_back, color: Colors.white), // Ícone de voltar
+                  SizedBox(width: 5), // Espaço entre o ícone e o texto
+                  Text(
+                    'Salvar e Voltar',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white, // Cor do texto
+                    ),
+                  ),
+                ],
+              ),
             ),
+
           ],
         ),
       ),
