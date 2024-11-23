@@ -12,64 +12,76 @@ class AddNotePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true, // Permite redimensionar a tela ao exibir o teclado
       appBar: customAppBar(
         title: 'Adicionar Nota',
         backgroundColor: Colors.green,
         automaticallyImplyLeading: false,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Campo de título
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(
-                labelText: 'Título',
-                labelStyle: TextStyle(fontSize: 16),
+      body: Column(
+        children: [
+          // Conteúdo da tela rolável
+          Expanded(
+            child: SingleChildScrollView( // Adiciona rolagem no conteúdo
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    // Campo de título
+                    TextField(
+                      controller: titleController,
+                      decoration: InputDecoration(
+                        labelText: 'Título',
+                        labelStyle: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+
+                    // Campo de conteúdo
+                    TextField(
+                      controller: contentController,
+                      maxLines: null,
+                      decoration: InputDecoration(
+                        labelText: 'Conteúdo',
+                        alignLabelWithHint: true,
+                        labelStyle: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    SizedBox(height: 20), // Espaço entre os campos e os botões
+                  ],
+                ),
               ),
             ),
-            SizedBox(height: 20),
+          ),
 
-            // Campo de conteúdo
-            TextField(
-              controller: contentController,
-              maxLines: null,
-              decoration: InputDecoration(
-                labelText: 'Conteúdo',
-                alignLabelWithHint: true,
-                labelStyle: TextStyle(fontSize: 16),
-              ),
-            ),
-
-            Expanded(child: Container()),
-
-            // Botões de Voltar e Salvar
-            Row(
+          // Botões de Voltar e Salvar
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Botão Voltar
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context); // Apenas volta para a página anterior
+                    Navigator.pop(context); // Volta para a página anterior
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent, // Cor de fundo
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Tamanho do botão
+                    backgroundColor: Colors.redAccent,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Bordas arredondadas
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.arrow_back, color: Colors.white), // Ícone
+                      Icon(Icons.arrow_back, color: Colors.white),
                       SizedBox(width: 5),
                       Text(
                         'Voltar',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white, // Cor do texto
+                          color: Colors.white,
                         ),
                       ),
                     ],
@@ -79,36 +91,57 @@ class AddNotePage extends StatelessWidget {
                 // Botão Salvar
                 ElevatedButton(
                   onPressed: () {
-                    // Criar uma nova nota
+                    // Valida os campos antes de salvar
+                    if (titleController.text.isEmpty ||
+                        contentController.text.isEmpty) {
+                      // Exibe um snackbar se algum campo estiver vazio
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Preencha todos os campos!'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+
+                    // Cria uma nova nota
                     final newNote = Note(
-                      id: DateTime.now().millisecondsSinceEpoch.toString(), // Converte o 'int' para 'String'
+                      id: DateTime.now().millisecondsSinceEpoch.toString(), // Gera um ID único
                       title: titleController.text,
                       content: contentController.text,
                     );
 
-                    // Disparar o evento AddNoteEvent para adicionar a nota
+                    // Dispara o evento AddNoteEvent
                     BlocProvider.of<NotesBloc>(context).add(AddNoteEvent(newNote));
 
-                    // Voltar para a página anterior
+                    // Exibe um snackbar de sucesso
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Nota adicionada com sucesso!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+
+                    // Volta para a página anterior
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Cor de fundo
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Tamanho do botão
+                    backgroundColor: Colors.green,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Bordas arredondadas
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.check, color: Colors.white), // Ícone
+                      Icon(Icons.check, color: Colors.white),
                       SizedBox(width: 5),
                       Text(
                         'Salvar',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white, // Cor do texto
+                          color: Colors.white,
                         ),
                       ),
                     ],
@@ -116,8 +149,8 @@ class AddNotePage extends StatelessWidget {
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
