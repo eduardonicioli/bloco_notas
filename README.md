@@ -31,4 +31,5 @@ Instale as dependências (utilizando pub)<br>
 
 # Membros do Grupo
 Carlos Eduardo - [GitHub](https://github.com/eduardonicioli)
+Rafael Henrique - [GitHub](https://github.com/RafaelHOliveira07)
 
