@@ -30,5 +30,6 @@ Instale as dependências (utilizando pub)<br>
 <i>flutter pub get</i>
 
 # Membros do Grupo
-Carlos Eduardo - [GitHub](https://github.com/eduardonicioli)
+Carlos Eduardo - [GitHub](https://github.com/eduardonicioli)<br>
+Rafael Henrique - [GitHub](https://github.com/RafaelHOliveira07)
 
