@@ -115,18 +115,26 @@ class _HomePageState extends State<HomePage> {
                     trailing: IconButton(
                       icon: Icon(Icons.delete),
                       onPressed: () {
-                        final deletedNote = note;
+                        final deletedNote = note; // Armazena a nota excluída
+                        final noteIndex = state.notes.indexOf(note); // Armazena o índice da nota na lista
+
+                        // Dispara o evento para excluir a nota
                         BlocProvider.of<NotesBloc>(context).add(DeleteNoteEvent(note.id));
+
+                        // Mostra o SnackBar com a opção de desfazer
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('Nota excluída'),
                             action: SnackBarAction(
                               label: 'Desfazer',
                               onPressed: () {
-                                BlocProvider.of<NotesBloc>(context).add(AddNoteEvent(deletedNote));
+                                // Adiciona a nota de volta na mesma posição
+                                BlocProvider.of<NotesBloc>(context).add(
+                                  RestoreNoteEvent(deletedNote, noteIndex),
+                                );
                               },
                             ),
-                            duration: Duration(seconds: 5),
+                            duration: Duration(seconds: 3),
                           ),
                         );
                       },

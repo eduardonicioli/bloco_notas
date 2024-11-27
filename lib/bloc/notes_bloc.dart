@@ -32,6 +32,15 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
       emit(NotesLoadedState(notes: notes));
     });
 
+    on<RestoreNoteEvent>((event, emit) {
+      if (state is NotesLoadedState) {
+        final currentState = state as NotesLoadedState;
+        final updatedNotes = List<Note>.from(currentState.notes);
+        updatedNotes.insert(event.index, event.note); // Insere na posição original
+        emit(NotesLoadedState(notes: updatedNotes));
+      }
+    });
+
     on<EditNoteEvent>((event, emit) async {
       final index = notes.indexWhere((note) => note.id == event.note.id);
       if (index != -1) {
