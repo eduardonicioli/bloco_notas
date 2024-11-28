@@ -99,8 +99,10 @@ class AddNotePage extends StatelessWidget {
                         SnackBar(
                           content: Text('Preencha todos os campos!'),
                           backgroundColor: Colors.red,
+                          duration: Duration(seconds: 1), // Ajuste o tempo para 2 segundos
                         ),
                       );
+
                       return;
                     }
 
@@ -122,8 +124,10 @@ class AddNotePage extends StatelessWidget {
                       ),
                     );
 
-                    // Volta para a página anterior
-                    Navigator.pop(context);
+                    // Aguarda a exibição do SnackBar antes de voltar
+                    Future.delayed(Duration(seconds: 0), () {
+                      Navigator.pop(context); // Volta para a página anterior
+                    });
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
