@@ -135,7 +135,7 @@ class AddNotePage extends StatelessWidget {
                   child: Row(
                     children: [
                       Icon(Icons.check, color: Colors.white),
-                      SizedBox(width: 5),
+                      SizedBox(width: 3),
                       Text(
                         'Salvar',
                         style: TextStyle(
