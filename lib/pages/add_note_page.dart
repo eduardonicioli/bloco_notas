@@ -4,10 +4,17 @@ import '../bloc/notes_bloc.dart';
 import '../bloc/notes_event.dart';
 import '../models/note.dart';
 import 'package:bloco_notas/widgets.dart';
+import 'dart:async';
 
-class AddNotePage extends StatelessWidget {
+class AddNotePage extends StatefulWidget {
+  @override
+  _AddNotePageState createState() => _AddNotePageState();
+}
+
+class _AddNotePageState extends State<AddNotePage> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
+  String? errorMessage; // Para exibir a mensagem de erro
 
   @override
   Widget build(BuildContext context) {
@@ -18,142 +25,166 @@ class AddNotePage extends StatelessWidget {
         backgroundColor: Colors.green,
         automaticallyImplyLeading: false,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          // Conteúdo da tela rolável
-          Expanded(
-            child: SingleChildScrollView( // Adiciona rolagem no conteúdo
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
+          // Conteúdo principal
+          Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: titleController,
+                          decoration: InputDecoration(
+                            labelText: 'Título',
+                            labelStyle: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        TextField(
+                          controller: contentController,
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            labelText: 'Conteúdo',
+                            alignLabelWithHint: true,
+                            labelStyle: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Campo de título
-                    TextField(
-                      controller: titleController,
-                      decoration: InputDecoration(
-                        labelText: 'Título',
-                        labelStyle: TextStyle(fontSize: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context); // Volta para a página anterior
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.arrow_back, color: Colors.white),
+                          SizedBox(width: 5),
+                          Text(
+                            'Voltar',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Valida os campos antes de salvar
+                        if (titleController.text.isEmpty ||
+                            contentController.text.isEmpty) {
+                          // Atualiza a mensagem de erro
+                          setState(() {
+                            errorMessage = 'Preencha todos os campos!';
+                          });
+                          Timer(Duration(seconds: 1), (){
+                            setState(() {
+                              errorMessage = null;
+                            });
+                          });
+                          return;
+                        }
 
-                    // Campo de conteúdo
-                    TextField(
-                      controller: contentController,
-                      maxLines: null,
-                      decoration: InputDecoration(
-                        labelText: 'Conteúdo',
-                        alignLabelWithHint: true,
-                        labelStyle: TextStyle(fontSize: 16),
+                        // Cria uma nova nota
+                        final newNote = Note(
+                          id: DateTime.now().millisecondsSinceEpoch.toString(), // Gera um ID único
+                          title: titleController.text,
+                          content: contentController.text,
+                        );
+
+                        // Dispara o evento AddNoteEvent
+                        BlocProvider.of<NotesBloc>(context).add(AddNoteEvent(newNote));
+
+                        // Limpa a mensagem de erro, se existir
+                        setState(() {
+                          errorMessage = null;
+                        });
+
+                        // Exibe um snackbar de sucesso
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Nota adicionada com sucesso!'),
+                            backgroundColor: Colors.green,
+                            duration: Duration(seconds: 3),
+                          ),
+                        );
+
+                        Future.delayed(Duration(seconds: 0), () {
+                          Navigator.pop(context); // Volta para a página anterior
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.check, color: Colors.white),
+                          SizedBox(width: 3),
+                          Text(
+                            'Salvar',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 20), // Espaço entre os campos e os botões
                   ],
                 ),
               ),
-            ),
+            ],
           ),
-
-          // Botões de Voltar e Salvar
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Botão Voltar
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Volta para a página anterior
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+          // Mensagem de erro
+          if (errorMessage != null)
+            Positioned(
+              bottom: 80, // Exibe acima dos botões
+              left: 16,
+              right: 16,
+              child: Material(
+                elevation: 2,
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    errorMessage!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.arrow_back, color: Colors.white),
-                      SizedBox(width: 5),
-                      Text(
-                        'Voltar',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
-
-                // Botão Salvar
-                ElevatedButton(
-                  onPressed: () {
-                    // Valida os campos antes de salvar
-                    if (titleController.text.isEmpty ||
-                        contentController.text.isEmpty) {
-                      // Exibe um snackbar se algum campo estiver vazio
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Preencha todos os campos!'),
-                          backgroundColor: Colors.red,
-                          duration: Duration(seconds: 1), // Ajuste o tempo para 2 segundos
-                        ),
-                      );
-
-                      return;
-                    }
-
-                    // Cria uma nova nota
-                    final newNote = Note(
-                      id: DateTime.now().millisecondsSinceEpoch.toString(), // Gera um ID único
-                      title: titleController.text,
-                      content: contentController.text,
-                    );
-
-                    // Dispara o evento AddNoteEvent
-                    BlocProvider.of<NotesBloc>(context).add(AddNoteEvent(newNote));
-
-                    // Exibe um snackbar de sucesso
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Nota adicionada com sucesso!'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-
-                    // Aguarda a exibição do SnackBar antes de voltar
-                    Future.delayed(Duration(seconds: 0), () {
-                      Navigator.pop(context); // Volta para a página anterior
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.check, color: Colors.white),
-                      SizedBox(width: 3),
-                      Text(
-                        'Salvar',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
         ],
       ),
     );

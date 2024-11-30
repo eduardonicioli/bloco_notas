@@ -128,6 +128,7 @@ class EditNotePage extends StatelessWidget {
                       SnackBar(
                         content: Text('Nota editada com sucesso!'),
                         backgroundColor: Colors.green,
+                        duration: Duration(seconds: 3),
                       ),
                     );
 
