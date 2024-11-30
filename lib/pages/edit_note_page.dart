@@ -4,6 +4,10 @@ import '../bloc/notes_bloc.dart';
 import '../bloc/notes_event.dart';
 import '../models/note.dart';
 import 'package:bloco_notas/widgets.dart';
+// Importações necessárias
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class EditNotePage extends StatelessWidget {
   final Note note;
@@ -12,6 +16,38 @@ class EditNotePage extends StatelessWidget {
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
+
+  // Função para compartilhar a nota como TXT
+  Future<void> shareNoteAsTxt(BuildContext context, String title, String content) async {
+    try {
+      // Diretório temporário
+      final directory = await getTemporaryDirectory();
+      final filePath = '${directory.path}/nota.txt';
+
+      // Criar conteúdo
+      final fileContent = "Título: $title\n\nConteúdo:\n$content";
+
+      // Criar o arquivo TXT
+      final file = File(filePath);
+      await file.writeAsString(fileContent);
+
+      // Compartilhar o arquivo
+      await Share.shareXFiles(
+        [XFile(filePath)], // Criação de um objeto XFile
+        text: 'Compartilhando uma nota!',
+      );
+
+    } catch (e) {
+      // Mostra uma mensagem de erro se algo der errado
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erro ao compartilhar a nota.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      print('Erro ao compartilhar nota: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +98,7 @@ class EditNotePage extends StatelessWidget {
             ),
           ),
 
-          // Botões de Voltar e Salvar
+          // Botões de Voltar, Compartilhar e Salvar
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -86,6 +122,39 @@ class EditNotePage extends StatelessWidget {
                       SizedBox(width: 5),
                       Text(
                         'Voltar',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Botão Compartilhar
+                ElevatedButton(
+                  onPressed: () {
+                    // Chama a função para compartilhar a nota como TXT
+                    shareNoteAsTxt(
+                      context,
+                      titleController.text.isEmpty ? "Sem título" : titleController.text,
+                      contentController.text.isEmpty ? "Sem conteúdo" : contentController.text,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange, // Cor de fundo
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10), // Bordas arredondadas
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.share, color: Colors.white), // Ícone
+                      SizedBox(width: 5),
+                      Text(
+                        'Share',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
