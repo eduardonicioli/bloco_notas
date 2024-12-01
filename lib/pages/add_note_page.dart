@@ -60,7 +60,7 @@ class _AddNotePageState extends State<AddNotePage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -78,7 +78,7 @@ class _AddNotePageState extends State<AddNotePage> {
                       child: Row(
                         children: [
                           Icon(Icons.arrow_back, color: Colors.white),
-                          SizedBox(width: 5),
+                          SizedBox(width: 3),
                           Text(
                             'Voltar',
                             style: TextStyle(

@@ -4,10 +4,11 @@ import '../bloc/notes_bloc.dart';
 import '../bloc/notes_event.dart';
 import '../models/note.dart';
 import 'package:bloco_notas/widgets.dart';
-// Importações necessárias
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:pdf/widgets.dart' as pw; // Importação da biblioteca PDF
+
 
 class EditNotePage extends StatelessWidget {
   final Note note;
@@ -17,26 +18,42 @@ class EditNotePage extends StatelessWidget {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
 
-  // Função para compartilhar a nota como TXT
-  Future<void> shareNoteAsTxt(BuildContext context, String title, String content) async {
+  // Função para compartilhar a nota como PDF
+  Future<void> shareNoteAsPdf(BuildContext context, String title, String content) async {
     try {
-      // Diretório temporário
+      // Criar um documento PDF
+      final pdf = pw.Document();
+
+      // Adicionar uma página com o conteúdo da nota
+      pdf.addPage(
+        pw.Page(
+          build: (pw.Context context) => pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                title.isNotEmpty ? title : 'Sem título',
+                style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+              ),
+              pw.SizedBox(height: 16),
+              pw.Text(content.isNotEmpty ? content : 'Sem conteúdo'),
+            ],
+          ),
+        ),
+      );
+
+      // Obter o diretório temporário
       final directory = await getTemporaryDirectory();
-      final filePath = '${directory.path}/nota.txt';
+      final filePath = '${directory.path}/nota.pdf';
 
-      // Criar conteúdo
-      final fileContent = "Título: $title\n\nConteúdo:\n$content";
-
-      // Criar o arquivo TXT
+      // Salvar o PDF no diretório
       final file = File(filePath);
-      await file.writeAsString(fileContent);
+      await file.writeAsBytes(await pdf.save());
 
-      // Compartilhar o arquivo
+      // Compartilhar o arquivo PDF
       await Share.shareXFiles(
         [XFile(filePath)], // Criação de um objeto XFile
         text: 'Compartilhando uma nota!',
       );
-
     } catch (e) {
       // Mostra uma mensagem de erro se algo der errado
       ScaffoldMessenger.of(context).showSnackBar(
@@ -100,135 +117,148 @@ class EditNotePage extends StatelessWidget {
 
           // Botões de Voltar, Compartilhar e Salvar
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Botão Voltar
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Volta para a página anterior
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent, // Cor de fundo
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Bordas arredondadas
+                Flexible(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Volta para a página anterior
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent, // Cor de fundo
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.02, // Ajustável
+                        vertical: MediaQuery.of(context).size.height * 0.01, // Ajustável
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), // Bordas arredondadas
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.arrow_back, color: Colors.white), // Ícone
+                        SizedBox(width: 4),
+                        Text(
+                          'Voltar',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.035, // Ajustável
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.arrow_back, color: Colors.white), // Ícone
-                      SizedBox(width: 5),
-                      Text(
-                        'Voltar',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
+
+                SizedBox(width: MediaQuery.of(context).size.width * 0.02), // Espaço entre botões
 
                 // Botão Compartilhar
-                ElevatedButton(
-                  onPressed: () {
-                    // Chama a função para compartilhar a nota como TXT
-                    shareNoteAsTxt(
-                      context,
-                      titleController.text.isEmpty ? "Sem título" : titleController.text,
-                      contentController.text.isEmpty ? "Sem conteúdo" : contentController.text,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange, // Cor de fundo
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Bordas arredondadas
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.share, color: Colors.white), // Ícone
-                      SizedBox(width: 5),
-                      Text(
-                        'Share',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                Flexible(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      shareNoteAsPdf(
+                        context,
+                        titleController.text.isEmpty ? "Sem título" : titleController.text,
+                        contentController.text.isEmpty ? "Sem conteúdo" : contentController.text,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange, // Cor de fundo
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.02, // Ajustável
+                        vertical: MediaQuery.of(context).size.height * 0.01, // Ajustável
                       ),
-                    ],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), // Bordas arredondadas
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.share, color: Colors.white), // Ícone
+                        SizedBox(width: 4),
+                        Text(
+                          'Compar...',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.035, // Ajustável
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
 
+                SizedBox(width: MediaQuery.of(context).size.width * 0.02), // Espaço entre botões
+
                 // Botão Salvar
-                ElevatedButton(
-                  onPressed: () {
-                    // Valida os campos antes de salvar
-                    if (titleController.text.isEmpty ||
-                        contentController.text.isEmpty) {
-                      // Exibe um snackbar se algum campo estiver vazio
+                Flexible(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (titleController.text.isEmpty || contentController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Preencha todos os campos!'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                        return;
+                      }
+
+                      final updatedNote = Note(
+                        id: note.id,
+                        title: titleController.text,
+                        content: contentController.text,
+                      );
+
+                      BlocProvider.of<NotesBloc>(context).add(EditNoteEvent(updatedNote));
+
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Preencha todos os campos!'),
-                          backgroundColor: Colors.red,
+                          content: Text('Nota editada com sucesso!'),
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 3),
                         ),
                       );
-                      return;
-                    }
 
-                    // Atualiza a nota com os novos valores
-                    final updatedNote = Note(
-                      id: note.id, // Mantém o ID original
-                      title: titleController.text,
-                      content: contentController.text,
-                    );
-
-                    // Dispara o evento EditNoteEvent
-                    BlocProvider.of<NotesBloc>(context)
-                        .add(EditNoteEvent(updatedNote));
-
-                    // Exibe um snackbar de sucesso
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Nota editada com sucesso!'),
-                        backgroundColor: Colors.green,
-                        duration: Duration(seconds: 3),
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue, // Cor de fundo
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.02, // Ajustável
+                        vertical: MediaQuery.of(context).size.height * 0.01, // Ajustável
                       ),
-                    );
-
-                    // Volta para a página anterior
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, // Cor de fundo
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // Bordas arredondadas
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), // Bordas arredondadas
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.check, color: Colors.white), // Ícone
-                      SizedBox(width: 5),
-                      Text(
-                        'Salvar',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.check, color: Colors.white), // Ícone
+                        SizedBox(width: 5),
+                        Text(
+                          'Salvar',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.035, // Ajustável
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
-          ),
+          )
         ],
       ),
     );

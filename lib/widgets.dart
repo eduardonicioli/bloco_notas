@@ -22,7 +22,7 @@ AppBar customAppBar({
         title,
         style: TextStyle(
           fontFamily: 'Roboto',
-          fontSize: 30,
+          fontSize: 23,
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
