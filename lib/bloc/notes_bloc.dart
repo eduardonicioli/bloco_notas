@@ -22,27 +22,26 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
 
     // Adicionar nota
     on<AddNoteEvent>((event, emit) async {
-      notes.add(event.note);
-      await notesRepository.saveNotes(notes);
-      emit(NotesLoadedState(notes: notes));
+      notes.add(event.note); // Adiciona a nova nota na lista
+      await notesRepository.saveNotes(notes); // Salva no repositório
+      emit(NotesLoadedState(notes: notes)); // Emite o estado com a lista atualizada
     });
+
 
     // Excluir nota
     on<DeleteNoteEvent>((event, emit) async {
-      notes.removeWhere((note) => note.id == event.id);
-      await notesRepository.saveNotes(notes);
-      emit(NotesLoadedState(notes: notes)); // Emitindo estado com lista atualizada
+      notes.removeWhere((note) => note.id == event.id); // Remove a nota pelo ID
+      await notesRepository.saveNotes(notes); // Salva no repositório
+      emit(NotesLoadedState(notes: notes)); // Emite o estado com a lista atualizada
     });
 
     // Restaurar nota excluída
-    on<RestoreNoteEvent>((event, emit) {
-      if (state is NotesLoadedState) {
-        final currentState = state as NotesLoadedState;
-        final updatedNotes = List<Note>.from(currentState.notes);
-        updatedNotes.insert(event.index, event.note); // Insere no índice original
-        emit(NotesLoadedState(notes: updatedNotes));
-      }
+    on<RestoreNoteEvent>((event, emit) async {
+      notes.insert(event.index, event.note); // Insere a nota de volta na posição original
+      await notesRepository.saveNotes(notes); // Salva a lista atualizada no repositório
+      emit(NotesLoadedState(notes: notes)); // Emite o estado com a lista atualizada
     });
+
 
     // Editar nota existente
     on<EditNoteEvent>((event, emit) async {

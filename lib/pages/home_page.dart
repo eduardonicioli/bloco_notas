@@ -128,9 +128,8 @@ class _HomePageState extends State<HomePage> {
                             action: SnackBarAction(
                               label: 'Desfazer',
                               onPressed: () {
-                                // Adiciona a nota de volta na mesma posição
                                 BlocProvider.of<NotesBloc>(context).add(
-                                  RestoreNoteEvent(deletedNote, noteIndex),
+                                  RestoreNoteEvent(deletedNote, noteIndex), // Envia a nota excluída e sua posição original
                                 );
                               },
                             ),
