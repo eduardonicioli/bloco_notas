@@ -28,15 +28,10 @@ JSON: Usa o pacote json_annotation em conjunto com o build_runner e json_seriali
 
 Exportação para PDF: Conta com o pacote PDF para transformar anotações em documentos PDF que podem ser compartilhados.
 
-💡 Este projeto foi desenvolvido como parte de um trabalho em grupo no curso Desenvolvimento de Software Multiplataforma da FATEC Itapira, com o objetivo de praticar Dart e o desenvolvimento de aplicações.
+💡 Este projeto foi desenvolvido como parte de um trabalho em grupo no curso <b>Desenvolvimento de Software Multiplataforma da FATEC Itapira</b>, com o objetivo de praticar Dart e o desenvolvimento de aplicações.
 
-<h2>⚙️ Instalação</h2>
-1.Clone o repositório:
+## ⚙️ Instalação
 
-bash
-git clone https://github.com/eduardonicioli/bloco_notas.git
-
-2.Instale as dependências:
-
-bash
-flutter pub get
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/eduardonicioli/bloco_notas.git
