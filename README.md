@@ -35,3 +35,7 @@ Exportação para PDF: Conta com o pacote PDF para transformar anotações em do
 1. Clone o repositório:
    ```bash
    git clone https://github.com/eduardonicioli/bloco_notas.git
+
+2. Instale as dependências:
+   ```bash
+   fluter pub get
